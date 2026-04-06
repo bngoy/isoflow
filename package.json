@@ -17,7 +17,7 @@
     "start": "webpack serve --config ./webpack/dev.config.js",
     "dev": "nodemon --watch ./src/ -e ts,tsx --exec npm run build",
     "build": "webpack --config ./webpack/prod.config.js && tsc --declaration --emitDeclarationOnly && tsc-alias",
-    "build:embed": "webpack --config ./webpack/embed.config.js",
+    "build:embed": "npx webpack --config ./webpack/embed.config.js",
     "build:cli": "tsc src/cli/build-viewer.ts --outDir dist/cli --esModuleInterop --module commonjs --target es2018 --resolveJsonModule --skipLibCheck",
     "build:sphinx": "npm run build:embed && cp dist/isoflow-embed.js packages/sphinx-isoflow/sphinx_isoflow/static/",
     "test": "jest",
