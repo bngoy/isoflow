@@ -1,0 +1,32 @@
+{
+  "version": "1.0.0",
+  "title": "Simple",
+  "colors": [
+    { "id": "orange", "value": "#f3cfa5" }
+  ],
+  "icons": [],
+  "items": [
+    { "id": "client", "name": "Client" },
+    { "id": "server", "name": "Server" }
+  ],
+  "views": [
+    {
+      "id": "v1",
+      "name": "Default",
+      "items": [
+        { "id": "client", "tile": { "x": 0, "y": 0 } },
+        { "id": "server", "tile": { "x": 5, "y": 0 } }
+      ],
+      "connectors": [
+        {
+          "id": "c1", "color": "orange",
+          "anchors": [
+            { "id": "a1", "ref": { "item": "client" } },
+            { "id": "a2", "ref": { "item": "server" } }
+          ]
+        }
+      ],
+      "rectangles": []
+    }
+  ]
+}

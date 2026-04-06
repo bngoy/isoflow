@@ -42,6 +42,7 @@ const getModeFunction = (mode: ModeActions, e: SlimMouseEvent) => {
 export const useInteractionManager = () => {
   const rendererRef = useRef<HTMLElement>();
   const reducerTypeRef = useRef<string>();
+  const isActiveInstanceRef = useRef(false);
   const uiState = useUiStateStore((state) => {
     return state;
   });
@@ -124,9 +125,29 @@ export const useInteractionManager = () => {
   useEffect(() => {
     if (uiState.mode.type === 'INTERACTIONS_DISABLED') return;
 
-    const el = window;
+    const rendererEl = uiState.rendererEl;
+
+    // Gate mouse events so only the instance where mousedown originated
+    // receives subsequent mousemove/mouseup events. This prevents multiple
+    // Isoflow instances on the same page from sharing pan state.
+    const onWindowMouseMove = (e: MouseEvent | SlimMouseEvent) => {
+      if (!isActiveInstanceRef.current) return;
+      onMouseEvent(e as SlimMouseEvent);
+    };
+
+    const onWindowMouseUp = (e: MouseEvent | SlimMouseEvent) => {
+      if (!isActiveInstanceRef.current) return;
+      isActiveInstanceRef.current = false;
+      onMouseEvent(e as SlimMouseEvent);
+    };
+
+    const onRendererMouseDown = (e: MouseEvent | SlimMouseEvent) => {
+      isActiveInstanceRef.current = true;
+      onMouseEvent(e as SlimMouseEvent);
+    };
 
     const onTouchStart = (e: TouchEvent) => {
+      isActiveInstanceRef.current = true;
       onMouseEvent({
         ...e,
         clientX: Math.floor(e.touches[0].clientX),
@@ -136,6 +157,7 @@ export const useInteractionManager = () => {
     };
 
     const onTouchMove = (e: TouchEvent) => {
+      if (!isActiveInstanceRef.current) return;
       onMouseEvent({
         ...e,
         clientX: Math.floor(e.touches[0].clientX),
@@ -145,6 +167,8 @@ export const useInteractionManager = () => {
     };
 
     const onTouchEnd = (e: TouchEvent) => {
+      if (!isActiveInstanceRef.current) return;
+      isActiveInstanceRef.current = false;
       onMouseEvent({
         ...e,
         clientX: 0,
@@ -161,24 +185,24 @@ export const useInteractionManager = () => {
       }
     };
 
-    el.addEventListener('mousemove', onMouseEvent);
-    el.addEventListener('mousedown', onMouseEvent);
-    el.addEventListener('mouseup', onMouseEvent);
-    el.addEventListener('contextmenu', onContextMenu);
-    el.addEventListener('touchstart', onTouchStart);
-    el.addEventListener('touchmove', onTouchMove);
-    el.addEventListener('touchend', onTouchEnd);
-    uiState.rendererEl?.addEventListener('wheel', onScroll);
+    window.addEventListener('mousemove', onWindowMouseMove);
+    window.addEventListener('mouseup', onWindowMouseUp);
+    rendererEl?.addEventListener('mousedown', onRendererMouseDown);
+    rendererEl?.addEventListener('contextmenu', onContextMenu);
+    rendererEl?.addEventListener('touchstart', onTouchStart);
+    window.addEventListener('touchmove', onTouchMove);
+    window.addEventListener('touchend', onTouchEnd);
+    rendererEl?.addEventListener('wheel', onScroll);
 
     return () => {
-      el.removeEventListener('mousemove', onMouseEvent);
-      el.removeEventListener('mousedown', onMouseEvent);
-      el.removeEventListener('mouseup', onMouseEvent);
-      el.removeEventListener('contextmenu', onContextMenu);
-      el.removeEventListener('touchstart', onTouchStart);
-      el.removeEventListener('touchmove', onTouchMove);
-      el.removeEventListener('touchend', onTouchEnd);
-      uiState.rendererEl?.removeEventListener('wheel', onScroll);
+      window.removeEventListener('mousemove', onWindowMouseMove);
+      window.removeEventListener('mouseup', onWindowMouseUp);
+      rendererEl?.removeEventListener('mousedown', onRendererMouseDown);
+      rendererEl?.removeEventListener('contextmenu', onContextMenu);
+      rendererEl?.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('touchend', onTouchEnd);
+      rendererEl?.removeEventListener('wheel', onScroll);
     };
   }, [
     uiState.editorMode,

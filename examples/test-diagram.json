@@ -1,0 +1,51 @@
+{
+  "version": "1.0.0",
+  "title": "Test Diagram",
+  "colors": [
+    { "id": "color1", "value": "#a5b8f3" },
+    { "id": "color2", "value": "#f3a5a5" }
+  ],
+  "icons": [],
+  "items": [
+    { "id": "node1", "name": "Server A" },
+    { "id": "node2", "name": "Server B" },
+    { "id": "node3", "name": "Database" }
+  ],
+  "views": [
+    {
+      "id": "view1",
+      "name": "Overview",
+      "items": [
+        { "id": "node1", "tile": { "x": 0, "y": 0 } },
+        { "id": "node2", "tile": { "x": 4, "y": 0 } },
+        { "id": "node3", "tile": { "x": 2, "y": 4 } }
+      ],
+      "connectors": [
+        {
+          "id": "conn1",
+          "color": "color1",
+          "anchors": [
+            { "id": "a1", "ref": { "item": "node1" } },
+            { "id": "a2", "ref": { "item": "node3" } }
+          ]
+        },
+        {
+          "id": "conn2",
+          "color": "color2",
+          "anchors": [
+            { "id": "a3", "ref": { "item": "node2" } },
+            { "id": "a4", "ref": { "item": "node3" } }
+          ]
+        }
+      ],
+      "rectangles": [
+        {
+          "id": "rect1",
+          "color": "color1",
+          "from": { "x": -1, "y": -1 },
+          "to": { "x": 5, "y": 5 }
+        }
+      ]
+    }
+  ]
+}
