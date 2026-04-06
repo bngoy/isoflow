@@ -1,0 +1,83 @@
+{
+  "version": "1.0.0",
+  "title": "Architecture",
+  "colors": [
+    { "id": "blue", "value": "#a5b8f3" },
+    { "id": "green", "value": "#a5f3b8" },
+    { "id": "red", "value": "#f3a5a5" }
+  ],
+  "icons": [],
+  "items": [
+    { "id": "lb", "name": "Load Balancer" },
+    { "id": "web1", "name": "Web Server 1" },
+    { "id": "web2", "name": "Web Server 2" },
+    { "id": "api", "name": "API Gateway" },
+    { "id": "db", "name": "Database" },
+    { "id": "cache", "name": "Cache" }
+  ],
+  "views": [
+    {
+      "id": "main",
+      "name": "Overview",
+      "items": [
+        { "id": "lb",   "tile": { "x": 3, "y": 0 } },
+        { "id": "web1", "tile": { "x": 1, "y": 3 } },
+        { "id": "web2", "tile": { "x": 5, "y": 3 } },
+        { "id": "api",  "tile": { "x": 3, "y": 6 } },
+        { "id": "db",   "tile": { "x": 1, "y": 9 } },
+        { "id": "cache","tile": { "x": 5, "y": 9 } }
+      ],
+      "connectors": [
+        {
+          "id": "c1", "color": "blue",
+          "anchors": [
+            { "id": "a1", "ref": { "item": "lb" } },
+            { "id": "a2", "ref": { "item": "web1" } }
+          ]
+        },
+        {
+          "id": "c2", "color": "blue",
+          "anchors": [
+            { "id": "a3", "ref": { "item": "lb" } },
+            { "id": "a4", "ref": { "item": "web2" } }
+          ]
+        },
+        {
+          "id": "c3", "color": "green",
+          "anchors": [
+            { "id": "a5", "ref": { "item": "web1" } },
+            { "id": "a6", "ref": { "item": "api" } }
+          ]
+        },
+        {
+          "id": "c4", "color": "green",
+          "anchors": [
+            { "id": "a7", "ref": { "item": "web2" } },
+            { "id": "a8", "ref": { "item": "api" } }
+          ]
+        },
+        {
+          "id": "c5", "color": "red",
+          "anchors": [
+            { "id": "a9",  "ref": { "item": "api" } },
+            { "id": "a10", "ref": { "item": "db" } }
+          ]
+        },
+        {
+          "id": "c6", "color": "red",
+          "anchors": [
+            { "id": "a11", "ref": { "item": "api" } },
+            { "id": "a12", "ref": { "item": "cache" } }
+          ]
+        }
+      ],
+      "rectangles": [
+        {
+          "id": "r1", "color": "blue",
+          "from": { "x": -1, "y": -1 },
+          "to": { "x": 7, "y": 11 }
+        }
+      ]
+    }
+  ]
+}
