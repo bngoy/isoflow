@@ -280,10 +280,21 @@ export const getMouse = ({
     })
   };
 
-  const newDelta: Mouse['delta'] = {
-    screen: CoordsUtils.subtract(newPosition.screen, lastMouse.position.screen),
-    tile: CoordsUtils.subtract(newPosition.tile, lastMouse.position.tile)
-  };
+  // On mousedown, reset delta to zero — lastMouse may be stale (e.g. initial
+  // state) so diffing against it would produce a large jump.
+  const newDelta: Mouse['delta'] =
+    mouseEvent.type === 'mousedown'
+      ? { screen: CoordsUtils.zero(), tile: CoordsUtils.zero() }
+      : {
+          screen: CoordsUtils.subtract(
+            newPosition.screen,
+            lastMouse.position.screen
+          ),
+          tile: CoordsUtils.subtract(
+            newPosition.tile,
+            lastMouse.position.tile
+          )
+        };
 
   const getMousedown = (): Mouse['mousedown'] => {
     switch (mouseEvent.type) {
